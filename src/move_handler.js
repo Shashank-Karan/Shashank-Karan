@@ -88,7 +88,7 @@ function updateREADME(engine, boardData) {
         .join('\n');
 
     const history = state.history.slice(-10).reverse().map(h => {
-        const time = new Date(h.timestamp).toLocaleString();
+        const time = new Date(h.timestamp).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
         return `| @${h.player} | \`${h.move}\` | ${time} |`;
     }).join('\n');
 
@@ -140,7 +140,7 @@ Invite your friends to take the next move:
 
 ***
 
-**Last Update:** ${new Date().toLocaleString()} (UTC)
+**Last Update:** ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })} (IST)
 
 ***
 
