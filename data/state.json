@@ -1,22 +1,6 @@
 {
-  "fen": "rnbqkbnr/pppppppp/8/8/8/2N5/PPPPPPPP/R1BQKBNR b KQkq - 1 1",
-  "history": [
-    {
-      "move": "b1c3",
-      "player": "Shashank-Karan",
-      "timestamp": "2025-12-28T17:09:18.576Z"
-    }
-  ],
+  "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+  "history": [],
   "players": {},
-  "lastMove": {
-    "color": "w",
-    "from": "b1",
-    "to": "c3",
-    "piece": "n",
-    "flags": "n",
-    "san": "Nc3",
-    "lan": "b1c3",
-    "before": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
-    "after": "rnbqkbnr/pppppppp/8/8/8/2N5/PPPPPPPP/R1BQKBNR b KQkq - 1 1"
-  }
+  "lastMove": null
 }
