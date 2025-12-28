@@ -55,7 +55,7 @@ When you click a link (the small dots on the board), it opens a GitHub Issue wit
 | :--- | :--- | :--- |
 | - | No moves yet | 0 |
 
-### 📢 Spread the Word!
+
 Invite your friends to take the next move:
 - [**🐦 Share on X (Twitter)**](https://twitter.com/intent/tweet?text=I%27m%20playing%20Community%20Chess%20on%20@Shashank-Karan%27s%20GitHub%20profile!%20Join%20the%20tournament:%20https://github.com/Shashank-Karan/Shashank-Karan)
 - [**📱 Share on WhatsApp**](https://api.whatsapp.com/send?text=Come%20join%20the%20Community%20Chess%20Tournament%20on%20GitHub!%20Take%20the%20next%20move%20here:%20https://github.com/Shashank-Karan/Shashank-Karan)
