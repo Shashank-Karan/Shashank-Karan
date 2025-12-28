@@ -26,7 +26,7 @@ async function handleMove() {
         console.log(`Move ${moveStr} successful by ${username}`);
 
         // Ensure board directory exists
-        const boardDir = path.join(__dirname, '..', 'data', 'board');
+        const boardDir = path.join(__dirname, '..', 'data', 'board_v2');
         if (!fs.existsSync(boardDir)) {
             fs.mkdirSync(boardDir, { recursive: true });
         }
@@ -161,7 +161,7 @@ function generateMarkdownTable(boardData) {
         for (let x = 0; x < 8; x++) {
             const square = boardData[y][x];
             const timestamp = Date.now();
-            const imgTag = `<img src="data/board/${square.square}.svg?t=${timestamp}" width="45" height="45" />`;
+            const imgTag = `<img src="data/board_v2/${square.square}.svg?t=${timestamp}" width="45" height="45" />`;
             if (square.moveUrl) {
                 rowStr += ` [${imgTag}](${square.moveUrl}) |`;
             } else {

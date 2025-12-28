@@ -9,7 +9,7 @@ const engine = new ChessEngine(stateFile);
 const renderer = new SVGRenderer();
 
 // Ensure board directory exists
-const boardDir = path.join(__dirname, 'data', 'board');
+const boardDir = path.join(__dirname, 'data', 'board_v2');
 if (!fs.existsSync(boardDir)) {
     fs.mkdirSync(boardDir, { recursive: true });
 }
