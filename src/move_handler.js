@@ -160,7 +160,8 @@ function generateMarkdownTable(boardData) {
         let rowStr = `| **${rowLabel}** |`;
         for (let x = 0; x < 8; x++) {
             const square = boardData[y][x];
-            const imgTag = `<img src="data/board/${square.square}.svg" width="45" height="45" />`;
+            const timestamp = Date.now();
+            const imgTag = `<img src="data/board/${square.square}.svg?t=${timestamp}" width="45" height="45" />`;
             if (square.moveUrl) {
                 rowStr += ` [${imgTag}](${square.moveUrl}) |`;
             } else {
