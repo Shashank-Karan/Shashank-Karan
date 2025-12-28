@@ -58,7 +58,7 @@ function updateREADME(engine, boardData) {
 
     let turnLabel = state.turn === 'w' ? 'WHITE (hollow)' : 'BLACK (solid)';
     let statusMessage = `It's your turn! Move a **${state.turn === 'w' ? 'white (hollow)' : 'black (solid)'}** piece.`;
-    let subStatus = `It's your move... to choose where to move...`;
+    let subStatus = `Current Board State (Turn: ${state.history.length + 1})`;
 
     if (state.isCheckmate) {
         const winner = state.turn === 'w' ? 'BLACK (solid)' : 'WHITE (hollow)';
@@ -140,6 +140,10 @@ Invite your friends to take the next move:
 
 ***
 
+**Last Update:** ${new Date().toLocaleString()} (UTC)
+
+***
+
 <p align="center">
   <b>Built with by <a href="https://github.com/Shashank-Karan">Shashank-Karan</a></b><br/>
   <i>If you found this cool, give the <a href="https://github.com/Shashank-Karan/Shashank-Karan">original repo a ⭐</a> to support the project!</i>
@@ -163,12 +167,12 @@ function generateMarkdownTable(boardData) {
     let table = '|   | A | B | C | D | E | F | G | H |   |\n';
     table += '|---|---|---|---|---|---|---|---|---|---|\n';
 
+    const timestamp = Date.now();
     for (let y = 0; y < 8; y++) {
         const rowLabel = 8 - y;
         let rowStr = `| **${rowLabel}** |`;
         for (let x = 0; x < 8; x++) {
             const square = boardData[y][x];
-            const timestamp = Date.now();
             const imgTag = `<img src="data/board_v2/${square.square}.svg?t=${timestamp}" width="45" height="45" />`;
             if (square.moveUrl) {
                 rowStr += ` [${imgTag}](${square.moveUrl}) |`;

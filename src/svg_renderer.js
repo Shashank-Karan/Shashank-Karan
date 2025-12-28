@@ -10,7 +10,7 @@ class SVGRenderer {
             light: '#f0d9b5',
             dark: '#b58863',
             highlight: 'rgba(255, 255, 0, 0.4)',
-            lastMove: 'rgba(155, 199, 0, 0.4)',
+            lastMove: 'rgba(255, 255, 0, 0.5)',
             text: '#313131'
         };
         this.pieceSymbols = {
@@ -21,20 +21,20 @@ class SVGRenderer {
 
     renderBoard(engine, owner, repo) {
         const board = [];
+        const game = engine.getGameState();
+        const legalMoves = engine.getLegalMoves();
         for (let y = 0; y < 8; y++) {
             const row = [];
             for (let x = 0; x < 8; x++) {
-                row.push(this.renderSquare(engine, x, y, owner, repo));
+                row.push(this.renderSquare(engine, x, y, owner, repo, game, legalMoves));
             }
             board.push(row);
         }
         return board;
     }
 
-    renderSquare(engine, x, y, owner, repo) {
-        const game = engine.getGameState();
+    renderSquare(engine, x, y, owner, repo, game, legalMoves) {
         const lastMove = game.lastMove;
-        const legalMoves = engine.getLegalMoves();
         const square = this.coordsToAlgebraic(x, y);
 
         // Determine piece at this square
