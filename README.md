@@ -68,7 +68,7 @@ Invite your friends to take the next move:
 ***
 
 <p align="center">
-  <b>Built with ❤️ by <a href="https://github.com/Shashank-Karan">Shashank-Karan</a></b><br/>
+  <b>Built with by <a href="https://github.com/Shashank-Karan">Shashank-Karan</a></b><br/>
   <i>If you found this cool, give the <a href="https://github.com/Shashank-Karan/Shashank-Karan">original repo a ⭐</a> to support the project!</i>
 </p>
 
