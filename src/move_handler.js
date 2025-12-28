@@ -25,20 +25,36 @@ async function handleMove() {
     if (result.success) {
         console.log(`Move ${moveStr} successful by ${username}`);
 
-        // Update Board SVG
-        const svg = renderer.render(engine, OWNER_ID, REPO_NAME);
-        fs.writeFileSync(path.join(__dirname, '..', 'data', 'board.svg'), svg);
+        // Ensure board directory exists
+        const boardDir = path.join(__dirname, '..', 'data', 'board');
+        if (!fs.existsSync(boardDir)) {
+            fs.mkdirSync(boardDir, { recursive: true });
+        }
+
+        // Update Board Squares
+        const boardData = renderer.renderBoard(engine, OWNER_ID, REPO_NAME);
+        boardData.forEach(row => {
+            row.forEach(squareData => {
+                fs.writeFileSync(path.join(boardDir, `${squareData.square}.svg`), squareData.svg);
+            });
+        });
 
         // Update README
-        updateREADME(engine);
+        updateREADME(engine, boardData);
     } else {
         console.error(`Move ${moveStr} failed:`, result.error);
     }
 }
 
-function updateREADME(engine) {
+function updateREADME(engine, boardData) {
     const readmePath = path.join(__dirname, '..', 'README.md');
     const state = engine.getGameState();
+
+    // If boardData is not provided (first run/reset), generate it
+    if (!boardData) {
+        const renderer = new SVGRenderer();
+        boardData = renderer.renderBoard(engine, OWNER_ID, REPO_NAME);
+    }
 
     let turnLabel = state.turn === 'w' ? 'WHITE (hollow)' : 'BLACK (solid)';
     let statusMessage = `It's your turn! Move a **${state.turn === 'w' ? 'white (hollow)' : 'black (solid)'}** piece.`;
@@ -87,7 +103,7 @@ ${subStatus}
 
 [**Ask a friend to take the next move: share link**](https://github.com/${OWNER_ID}/${REPO_NAME}/stargazers)
 
-![Chess Board](data/board.svg)
+${generateMarkdownTable(boardData)}
 
 ### How this works
 
@@ -119,6 +135,30 @@ ${leaderboard || '| - | No moves yet | 0 |'}
     }
 
     fs.writeFileSync(readmePath, readme);
+}
+
+function generateMarkdownTable(boardData) {
+    let table = '|   | A | B | C | D | E | F | G | H |   |\n';
+    table += '|---|---|---|---|---|---|---|---|---|---|\n';
+
+    for (let y = 0; y < 8; y++) {
+        const rowLabel = 8 - y;
+        let rowStr = `| **${rowLabel}** |`;
+        for (let x = 0; x < 8; x++) {
+            const square = boardData[y][x];
+            const imgTag = `<img src="data/board/${square.square}.svg" width="45" height="45" />`;
+            if (square.moveUrl) {
+                rowStr += ` [${imgTag}](${square.moveUrl}) |`;
+            } else {
+                rowStr += ` ${imgTag} |`;
+            }
+        }
+        rowStr += ` **${rowLabel}** |`;
+        table += rowStr + '\n';
+    }
+
+    table += '|   | **A** | **B** | **C** | **D** | **E** | **F** | **G** | **H** |   |\n';
+    return table;
 }
 
 module.exports = {
