@@ -7,7 +7,7 @@ It's your turn! Move a **black (solid)** piece. 👋
 ### BLACK (solid)
 It's your move... to choose where to move...
 
-[**Ask a friend to take the next move: share link**](https://github.com/Shashank-Karan/Shashank-Karan/stargazers)
+[**📢 Click here to invite a friend for the next move!**](https://twitter.com/intent/tweet?text=I%27m%20playing%20Community%20Chess%20on%20@Shashank-Karan%27s%20GitHub%20profile!%20Come%20join%20the%20tournament%20and%20take%20the%20next%20move%20here:%20https://github.com/Shashank-Karan/Shashank-Karan)
 
 |   | A | B | C | D | E | F | G | H |   |
 |---|---|---|---|---|---|---|---|---|---|
