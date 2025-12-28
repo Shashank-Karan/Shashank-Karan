@@ -73,7 +73,7 @@ class SVGRenderer {
 
         // If there's a move to this square, we wrap the image in a link in the Markdown table.
         // We'll return both the SVG and the potential URL.
-        const moveUrl = move ? `https://github.com/${owner}/${repo}/issues/new?title=Chess+Move:+${move.lan}&amp;body=Click+Submit+to+make+your+move!` : null;
+        const moveUrl = move ? `https://github.com/${owner}/${repo}/issues/new?title=Chess+Move:+${move.lan}&body=Click+Submit+to+make+your+move!` : null;
 
         return {
             svg,

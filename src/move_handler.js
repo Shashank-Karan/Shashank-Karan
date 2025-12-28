@@ -105,6 +105,13 @@ ${subStatus}
 
 ${generateMarkdownTable(boardData)}
 
+### 💡 How to Move
+1. **Click the Board**: Click on any **Blue Dot** on the chessboard to move a piece to that square.
+2. **Use the List**: If multiple pieces can move to the same square, use the **Legal Moves** list below.
+
+### 📜 Legal Moves for ${state.turn === 'w' ? 'White' : 'Black'}
+${generateLegalMovesLinks(engine, OWNER_ID, REPO_NAME)}
+
 ### How this works
 
 When you click a link (the small dots on the board), it opens a GitHub Issue with the required pre-populated text. Just push **"Submit new issue"**. That will trigger a GitHub Actions workflow that'll update my GitHub Profile README.md with the new state of the board.
@@ -159,6 +166,42 @@ function generateMarkdownTable(boardData) {
 
     table += '|   | **A** | **B** | **C** | **D** | **E** | **F** | **G** | **H** |   |\n';
     return table;
+}
+
+function generateLegalMovesLinks(engine, owner, repo) {
+    const moves = engine.getLegalMoves();
+    if (moves.length === 0) return '_No legal moves available._';
+
+    // Group moves by 'from' square
+    const grouped = {};
+    moves.forEach(m => {
+        if (!grouped[m.from]) grouped[m.from] = [];
+        grouped[m.from].push(m);
+    });
+
+    let output = '';
+    for (const from in grouped) {
+        const piece = engine.chess.get(from);
+        const pieceName = getPieceName(piece);
+        const moveLinks = grouped[from].map(m => {
+            const url = `https://github.com/${owner}/${repo}/issues/new?title=Chess+Move:+${m.lan}&body=Click+Submit+to+make+your+move!`;
+            return `[\`${m.to}\`](${url})`;
+        }).join(', ');
+        output += `- **${pieceName} (${from})**: ${moveLinks}\n`;
+    }
+    return output;
+}
+
+function getPieceName(piece) {
+    const names = {
+        'p': 'Pawn',
+        'n': 'Knight',
+        'b': 'Bishop',
+        'r': 'Rook',
+        'q': 'Queen',
+        'k': 'King'
+    };
+    return names[piece.type];
 }
 
 module.exports = {
