@@ -1,0 +1,32 @@
+name: Chess Game
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  move:
+    if: startsWith(github.event.issue.title, 'Chess Move:')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - run: npm install
+      - name: Make Move
+        run: node src/move_handler.js
+        env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_USER: ${{ github.event.issue.user.login }}
+      - name: Close Issue
+        uses: peter-evans/close-issue@v3
+        with:
+          comment: "Move accepted! Board updated."
+      - name: Commit changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add data/state.json data/board.svg README.md
+          git commit -m "Chess move: ${{ github.event.issue.title }}" || echo "No changes to commit"
+          git push
