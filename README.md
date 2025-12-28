@@ -50,7 +50,7 @@ When you click a link (the small dots on the board), it opens a GitHub Issue wit
 ### Last few moves, this game
 | Player | Move | Time |
 | :--- | :--- | :--- |
-| @Shashank-Karan | `b1c3` | 12/28/2025, 5:09:18 PM |
+| @Shashank-Karan | `b1c3` | 12/28/2025, 10:39:18 PM |
 
 ### Top 20 Leaderboard: Most moves across all games, except me.
 | Rank | Player | Moves |
