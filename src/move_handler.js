@@ -137,6 +137,14 @@ Invite your friends to take the next move:
 - [**✈️ Share on Telegram**](https://t.me/share/url?url=https://github.com/${OWNER_ID}/${REPO_NAME}&text=Join%20the%20Chess%20Tournament%20on%20GitHub!)
 - [**🤖 Share on Reddit**](https://www.reddit.com/submit?url=https://github.com/${OWNER_ID}/${REPO_NAME}&title=Community%20Chess%20on%20GitHub)
 
+
+***
+
+<p align="center">
+  <b>Built with ❤️ by <a href="https://github.com/Shashank-Karan">Shashank-Karan</a></b><br/>
+  <i>If you found this cool, give the <a href="https://github.com/Shashank-Karan/Shashank-Karan">original repo a ⭐</a> to support the project!</i>
+</p>
+
 <!-- CHESS_END -->
 `;
 
