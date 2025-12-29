@@ -24,21 +24,35 @@ const initialState = {
 };
 fs.writeFileSync(stateFile, JSON.stringify(initialState, null, 2));
 
-// Ensure board directory exists
-const boardDir = path.join(__dirname, 'data', 'board_v2');
-if (!fs.existsSync(boardDir)) {
-    fs.mkdirSync(boardDir, { recursive: true });
+// Create turn-specific directory
+const turnDir = `turn_0`;
+const finalBoardDir = path.join(__dirname, 'data', 'board_v2', turnDir);
+
+// Remove old board directory to keep repo clean
+const parentDir = path.join(__dirname, 'data', 'board_v2');
+if (fs.existsSync(parentDir)) {
+    const files = fs.readdirSync(parentDir);
+    files.forEach(file => {
+        const fullPath = path.join(parentDir, file);
+        if (fs.lstatSync(fullPath).isDirectory() && file !== turnDir) {
+            fs.rmSync(fullPath, { recursive: true, force: true });
+        }
+    });
+}
+
+if (!fs.existsSync(finalBoardDir)) {
+    fs.mkdirSync(finalBoardDir, { recursive: true });
 }
 
 // Update Board Squares
 const boardData = renderer.renderBoard(engine, OWNER_ID, REPO_NAME);
 boardData.forEach(row => {
     row.forEach(squareData => {
-        fs.writeFileSync(path.join(boardDir, `${squareData.square}.svg`), squareData.svg);
+        fs.writeFileSync(path.join(finalBoardDir, `${squareData.square}.svg`), squareData.svg);
     });
 });
 
 // Update README
-updateREADME(engine, boardData);
+updateREADME(engine, boardData, 0);
 
 console.log('\x1b[32m%s\x1b[0m', '✅ Project reset to initial state successfully.');

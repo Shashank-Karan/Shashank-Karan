@@ -25,8 +25,22 @@ async function handleMove() {
     if (result.success) {
         console.log(`Move ${moveStr} successful by ${username}`);
 
-        // Ensure board directory exists
-        const boardDir = path.join(__dirname, '..', 'data', 'board_v2');
+        // Create turn-specific directory for better cache busting
+        const turnDir = `turn_${engine.state.history.length}`;
+        const boardDir = path.join(__dirname, '..', 'data', 'board_v2', turnDir);
+
+        // Remove old board directory to keep repo clean
+        const parentDir = path.join(__dirname, '..', 'data', 'board_v2');
+        if (fs.existsSync(parentDir)) {
+            const files = fs.readdirSync(parentDir);
+            files.forEach(file => {
+                const fullPath = path.join(parentDir, file);
+                if (fs.lstatSync(fullPath).isDirectory() && file !== turnDir) {
+                    fs.rmSync(fullPath, { recursive: true, force: true });
+                }
+            });
+        }
+
         if (!fs.existsSync(boardDir)) {
             fs.mkdirSync(boardDir, { recursive: true });
         }
@@ -40,15 +54,16 @@ async function handleMove() {
         });
 
         // Update README
-        updateREADME(engine, boardData);
+        updateREADME(engine, boardData, engine.state.history.length);
     } else {
         console.error(`Move ${moveStr} failed:`, result.error);
     }
 }
 
-function updateREADME(engine, boardData) {
+function updateREADME(engine, boardData, historyLen) {
     const readmePath = path.join(__dirname, '..', 'README.md');
     const state = engine.getGameState();
+    const currentHistoryLen = historyLen || (state.history ? state.history.length : 0);
 
     // If boardData is not provided (first run/reset), generate it
     if (!boardData) {
@@ -101,7 +116,7 @@ ${statusMessage} 👋
 ### ${turnLabel}
 ${subStatus}
 
-${generateMarkdownTable(boardData)}
+${generateMarkdownTable(boardData, currentHistoryLen)}
 
 ### 💡 How to Move
 1. **Click the Board**: Click on any **Blue Dot** on the chessboard to move a piece to that square.
@@ -163,17 +178,19 @@ Invite your friends to take the next move:
     fs.writeFileSync(readmePath, readme);
 }
 
-function generateMarkdownTable(boardData) {
+function generateMarkdownTable(boardData, historyLen) {
     let table = '|   | A | B | C | D | E | F | G | H |   |\n';
     table += '|---|---|---|---|---|---|---|---|---|---|\n';
 
     const timestamp = Date.now();
+    const turnFolder = `turn_${historyLen}`;
+
     for (let y = 0; y < 8; y++) {
         const rowLabel = 8 - y;
         let rowStr = `| **${rowLabel}** |`;
         for (let x = 0; x < 8; x++) {
             const square = boardData[y][x];
-            const imgTag = `<img src="data/board_v2/${square.square}.svg?t=${timestamp}" width="45" height="45" />`;
+            const imgTag = `<img src="data/board_v2/${turnFolder}/${square.square}.svg?t=${timestamp}" width="45" height="45" />`;
             if (square.moveUrl) {
                 rowStr += ` [${imgTag}](${square.moveUrl}) |`;
             } else {
