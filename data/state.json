@@ -1,5 +1,5 @@
 {
-  "fen": "r1bqkb1r/pppppppp/2n2n2/8/2B1P3/5Q2/PPPP1PPP/RNB1K1NR b KQkq - 4 3",
+  "fen": "r1bqkb1r/pppp1ppp/2n1pn2/8/2B1P3/5Q2/PPPP1PPP/RNB1K1NR w KQkq - 0 4",
   "history": [
     {
       "move": "e2e4",
@@ -25,18 +25,23 @@
       "move": "f1c4",
       "player": "Josephrp",
       "timestamp": "2025-12-30T02:52:24.745Z"
+    },
+    {
+      "move": "e7e6",
+      "player": "Shashank-Karan",
+      "timestamp": "2026-01-01T11:52:00.310Z"
     }
   ],
   "players": {},
   "lastMove": {
-    "color": "w",
-    "from": "f1",
-    "to": "c4",
-    "piece": "b",
+    "color": "b",
+    "from": "e7",
+    "to": "e6",
+    "piece": "p",
     "flags": "n",
-    "san": "Bc4",
-    "lan": "f1c4",
-    "before": "r1bqkb1r/pppppppp/2n2n2/8/4P3/5Q2/PPPP1PPP/RNB1KBNR w KQkq - 3 3",
-    "after": "r1bqkb1r/pppppppp/2n2n2/8/2B1P3/5Q2/PPPP1PPP/RNB1K1NR b KQkq - 4 3"
+    "san": "e6",
+    "lan": "e7e6",
+    "before": "r1bqkb1r/pppppppp/2n2n2/8/2B1P3/5Q2/PPPP1PPP/RNB1K1NR b KQkq - 4 3",
+    "after": "r1bqkb1r/pppp1ppp/2n1pn2/8/2B1P3/5Q2/PPPP1PPP/RNB1K1NR w KQkq - 0 4"
   }
 }
