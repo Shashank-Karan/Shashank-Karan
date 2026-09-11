@@ -22,6 +22,7 @@ function renderReadme(root, game, players, config) {
     return '[' + move + '](' + issueLink(repo, move, moveTitle) + ')';
   }).join(' · ') || 'No legal moves remain.';
   const board = renderBoard(game, repo);
+  fs.writeFileSync(path.join(root, 'assets', 'board.svg'), `${board}\n`);
   const leaders = leaderboard(players).map(([name, value], index) => {
     return `${index + 1}. @${name} - ${value.moves} moves, ${value.captures} captures, ${value.elo} ELO`;
   }).join('\n') || 'No contributors yet.';
@@ -63,7 +64,7 @@ function renderReadme(root, game, players, config) {
     '',
     '## Current Board',
     '',
-    board,
+    '![Current Go board](assets/board.svg)',
     '',
     '## How To Read The Board',
     '',
