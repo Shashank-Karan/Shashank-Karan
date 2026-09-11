@@ -73,7 +73,7 @@ function renderReadme(root, game, players, config) {
     '',
     '## Current Board',
     '',
-    '![Current Go board](assets/board.svg)',
+    '<img src="assets/board.svg" alt="Current Go board" width="760">',
     '',
     '## How To Read The Board',
     '',

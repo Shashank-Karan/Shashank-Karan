@@ -18,7 +18,7 @@ You are playing the color shown in **Current Turn**. Only one person can make th
 
 ## Current Board
 
-![Current Go board](assets/board.svg)
+<img src="assets/board.svg" alt="Current Go board" width="760">
 
 ## How To Read The Board
 
