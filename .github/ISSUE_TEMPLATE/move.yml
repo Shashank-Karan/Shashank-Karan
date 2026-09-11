@@ -1,0 +1,19 @@
+name: Submit a Go move
+description: Play the next move in the community game
+title: "Go move: "
+labels: [go-move]
+body:
+  - type: input
+    id: coordinate
+    attributes:
+      label: Your move
+      description: Type the coordinate you clicked in the README, such as D4. You can also type pass.
+      placeholder: D4
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: |
+        **Almost done.** Click **Submit new issue** below. The bot checks the move automatically.
+
+        One issue is one move. If the move is legal, the board and current turn update shortly. If it is rejected, read the bot's reason and try another coordinate from the README.

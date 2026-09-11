@@ -1,0 +1,14 @@
+{
+  "name": "community-go-game",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A continuous community Go game played through GitHub Issues and Actions.",
+  "main": "src/cli.js",
+  "scripts": {
+    "test": "node --test",
+    "generate": "node src/cli.js generate",
+    "validate": "node src/cli.js validate",
+    "help": "node src/cli.js help"
+  },
+  "engines": { "node": ">=20" }
+}

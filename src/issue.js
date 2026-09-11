@@ -1,0 +1,16 @@
+'use strict';
+const { parseCoordinate } = require('./go');
+function parseMove(issue, size) {
+  const text = `${issue.title || ''}\n${issue.body || ''}`;
+  const match = text.match(/(?:^|\n|\s)([A-Za-z])\s*([1-9][0-9]*)(?:\s|$|[)])/i) || text.match(/\b([A-Za-z][1-9][0-9]*)\b/i);
+  if (!match) throw new Error('No coordinate found. Use a coordinate such as D4.');
+  const value = match[2] ? `${match[1]}${match[2]}` : match[1];
+  const move = parseCoordinate(value, size);
+  if (!move) throw new Error(`Invalid coordinate: ${value}`);
+  return move;
+}
+function issueLink(repository, coordinate, title = 'Go move') {
+  const params = new URLSearchParams({ title: `${title}: ${coordinate}`, body: `Move: ${coordinate}\n\nPlease leave this issue open for the Action bot to process.` });
+  return `https://github.com/${repository}/issues/new?${params}`;
+}
+module.exports = { issueLink, parseMove };

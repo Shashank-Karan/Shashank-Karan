@@ -1,0 +1,29 @@
+'use strict';
+const path = require('node:path');
+const { playMove, other } = require('./go');
+const { parseMove } = require('./issue');
+const { loadConfig, loadGame, loadPlayers, writeJson } = require('./state');
+const { addCapture, updatePlayer } = require('./stats');
+const { renderReadme } = require('./readme');
+const { toSgf } = require('./sgf');
+function applyIssue(root, issue) {
+  const config = loadConfig(root), game = loadGame(root), players = loadPlayers(root);
+  const player = issue.user?.login || 'anonymous';
+  if (game.finished) throw new Error('This game has finished');
+  if (/\bpass\b/i.test(`${issue.title || ''} ${issue.body || ''}`)) {
+    game.history.push({ type: 'pass', color: game.turn, player, moveNumber: game.history.length + 1 });
+    game.passes += 1; game.turn = other(game.turn); if (game.passes >= 2) game.finished = true;
+  } else {
+    const move = parseMove(issue, game.boardSize), result = playMove(game, move.row, move.col);
+    game.board = result.board; game.previousPosition = result.previousPosition; game.position = result.position;
+    game.captures[game.turn] += result.captured;
+    game.history.push({ type: 'move', color: game.turn, row: move.row, col: move.col, coordinate: move.coordinate, captured: result.captured, player, moveNumber: game.history.length + 1 });
+    updatePlayer(players, player, game.turn, game.history.length); addCapture(players, player, result.captured);
+    game.lastMove = { row: move.row, col: move.col, coordinate: move.coordinate };
+    game.passes = 0; game.turn = other(game.turn);
+  }
+  writeJson(path.join(root, 'data', 'game.json'), game); writeJson(path.join(root, 'data', 'players.json'), players);
+  require('node:fs').writeFileSync(path.join(root, 'data', 'game.sgf'), `${toSgf(game)}\n`); renderReadme(root, game, players, config);
+  return game;
+}
+module.exports = { applyIssue };

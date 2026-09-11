@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "boardSize": 19,
+  "turn": "B",
+  "board": [],
+  "history": [],
+  "captures": { "B": 0, "W": 0 },
+  "passes": 0,
+  "finished": false,
+  "lastMove": null,
+  "previousPosition": null,
+  "position": null
+}

@@ -1,0 +1,43 @@
+name: Process Go move
+on:
+  issues:
+    types: [opened]
+permissions:
+  contents: write
+  issues: write
+jobs:
+  move:
+    if: contains(github.event.issue.title, 'Go move') || contains(github.event.issue.title, 'Go pass') || contains(github.event.issue.body, 'Move:')
+    concurrency:
+      group: community-go-move
+      cancel-in-progress: false
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - name: Validate and apply move
+        id: apply
+        run: node src/validate.js
+      - name: Commit game state
+        run: |
+          git config user.name 'community-go-bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git add README.md data/
+          git commit -m "go: process issue #${{ github.event.issue.number }}" || true
+          git push
+      - name: Close processed issue
+        if: success() && github.event.issue != null
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.addLabels({owner: context.repo.owner, repo: context.repo.repo, issue_number: context.issue.number, labels: ['move-processed']});
+            await github.rest.issues.createComment({owner: context.repo.owner, repo: context.repo.repo, issue_number: context.issue.number, body: 'Accepted. The board is being updated now. Please refresh the README in a moment.'});
+            await github.rest.issues.update({owner: context.repo.owner, repo: context.repo.repo, issue_number: context.issue.number, state: 'closed'});
+      - name: Mark rejected issue
+        if: failure() && github.event.issue != null
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.addLabels({owner: context.repo.owner, repo: context.repo.repo, issue_number: context.issue.number, labels: ['move-rejected']});
+            await github.rest.issues.createComment({owner: context.repo.owner, repo: context.repo.repo, issue_number: context.issue.number, body: 'This move was rejected. Check the workflow log for the reason, then choose another coordinate from the README.'});

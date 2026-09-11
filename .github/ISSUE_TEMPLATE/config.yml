@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Read the rules and current board
+    url: https://github.com/OWNER/REPOSITORY
+    about: Open the profile README for legal moves and game status.
