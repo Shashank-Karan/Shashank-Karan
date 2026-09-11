@@ -14,6 +14,8 @@ function recordResult(players, winner) {
   return players;
 }
 function leaderboard(players) {
-  return Object.entries(players.players).sort((a, b) => b[1].moves - a[1].moves).slice(0, 10);
+  return Object.entries(players.players)
+    .sort((a, b) => b[1].moves - a[1].moves || b[1].captures - a[1].captures)
+    .slice(0, 10);
 }
 module.exports = { addCapture, leaderboard, recordResult, updatePlayer };

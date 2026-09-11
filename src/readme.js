@@ -18,20 +18,29 @@ function renderReadme(root, game, players, config) {
     const number = game.history.length - index;
     return `${number}. **${move.color || '-'}** ${move.coordinate || 'pass'} by @${move.player || 'anonymous'}`;
   }).join('\n') || 'No moves yet.';
-  const links = legalMoves(game).slice(0, 100).map(move => {
+  const legal = legalMoves(game);
+  const links = legal.map(move => {
     return '[' + move + '](' + issueLink(repo, move, moveTitle) + ')';
-  }).join(' · ') || 'No legal moves remain.';
+  }).reduce((rows, link, index) => {
+    const row = Math.floor(index / game.boardSize);
+    rows[row] = rows[row] ? `${rows[row]} · ${link}` : link;
+    return rows;
+  }, []).join('\n\n') || 'No legal moves remain.';
   const board = renderBoard(game, repo);
   fs.writeFileSync(path.join(root, 'assets', 'board.svg'), `${board}\n`);
   const leaders = leaderboard(players).map(([name, value], index) => {
-    return `${index + 1}. @${name} - ${value.moves} moves, ${value.captures} captures, ${value.elo} ELO`;
+    return `${index + 1}. @${name} - **${value.moves} moves** (${value.black} Black, ${value.white} White), ${value.captures} captures`;
   }).join('\n') || 'No contributors yet.';
+  const lastMove = game.lastMove ? `${game.lastMove.coordinate} by @${game.history.at(-1).player || 'anonymous'}` : 'None yet';
   const stats = [
     `- Board: **${game.boardSize}x${game.boardSize}**`,
     `- Move count: **${game.history.length}**`,
     `- Captures: **Black ${game.captures.B} / White ${game.captures.W}**`,
     `- Passes: **${game.passes}**`,
-    `- Status: **${game.finished ? 'Finished' : 'In progress'}**`
+    `- Status: **${game.finished ? 'Finished' : 'In progress'}**`,
+    `- Legal moves available: **${legal.length}**`,
+    `- Players: **${Object.keys(players.players).length}**`,
+    `- Last move: **${lastMove}**`
   ].join('\n');
   const turnLabel = game.finished ? 'the end of the game' : turnName(game.turn) + "'s turn";
   const coordinateGuide = [
@@ -78,7 +87,7 @@ function renderReadme(root, game, players, config) {
     '',
     `Click one of these coordinates to play: ${links}`,
     '',
-    'A move can be rejected if the spot is occupied, leaves your group without liberties, or repeats the previous position (Ko). The README refreshes automatically after every accepted move. GitHub Actions is automatic but asynchronous, so refresh this page after submitting while the workflow runs.',
+    'A move can be rejected if the spot is occupied, leaves your group without liberties, or repeats the previous position (Ko). The list above contains every legal move for the current turn. GitHub Actions processes moves automatically; refresh this page after submitting while the workflow runs.',
     '',
     '## Last 20 Moves',
     '',
@@ -92,11 +101,7 @@ function renderReadme(root, game, players, config) {
     '',
     stats,
     '',
-    '## Share Links',
-    '',
-    `[Open a move issue](${issueLink(repo, '', 'Go move')}) · [Browse move issues](https://github.com/${repo}/issues) · [Download SGF](https://github.com/${repo}/raw/main/data/game.sgf)`,
-    '',
-    '_Game state is stored in [data/game.json](data/game.json). Rules and automation live in [src](src). _'
+    '_Game state is stored in [data/game.json](data/game.json). Rules and automation live in [src](src)._'
   ];
   fs.writeFileSync(path.join(root, 'README.md'), `${sections.join('\n')}\n`);
 }
