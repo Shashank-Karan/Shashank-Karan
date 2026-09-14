@@ -18,7 +18,7 @@ move.yml -> validate.js -> process-move.js
                        readme.js -> README.md
 ```
 
-`go.js` is a pure rules layer: groups, liberties, captures, suicide, positional Ko, coordinates, and legal move enumeration. `issue.js` translates untrusted issue text into a coordinate. `state.js` provides JSON persistence. `renderer.js` emits an inline SVG with legal links. `readme.js` composes the public game view.
+`go.js` is a pure rules layer: groups, liberties, captures, suicide, positional superko, coordinates, and legal move enumeration. `score.js` applies deterministic Chinese area scoring. `issue.js` translates untrusted issue text into a coordinate. `state.js` provides JSON persistence. `renderer.js` emits the board asset with legal links. `readme.js` composes the public game view.
 
 The repository is deliberately append-and-commit based. Git history is the archive, `data/game.json` is the current snapshot, issues are the public move log, and `data/game.sgf` is the export format.
 

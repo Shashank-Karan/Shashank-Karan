@@ -9,6 +9,9 @@ function loadGame(root) {
   const file = path.join(root, 'data', 'game.json');
   const game = readJson(file);
   if (!game.board || (game.board.length === 0 && !game.history?.length)) return initialState(game.boardSize || 19);
+  if (!game.positions) game.positions = [game.previousPosition, game.position].filter(Boolean);
+  if (!game.players) game.players = { B: null, W: null };
+  if (!Object.prototype.hasOwnProperty.call(game, 'score')) game.score = null;
   validateGame(game);
   return game;
 }
@@ -21,6 +24,7 @@ function validateGame(game) {
   if (game.turn !== 'B' && game.turn !== 'W') throw new Error('Turn must be B or W');
   if (game.position && game.position !== boardKey(game.board)) throw new Error('Stored board position does not match the board');
   if (!Array.isArray(game.history) || !game.captures || typeof game.captures.B !== 'number' || typeof game.captures.W !== 'number') throw new Error('Game history or captures are invalid');
+  if (!Array.isArray(game.positions) || game.positions.at(-1) !== game.position) throw new Error('Position history is missing or out of date');
   return true;
 }
 module.exports = { loadConfig, loadGame, loadPlayers, readJson, validateGame, writeJson };

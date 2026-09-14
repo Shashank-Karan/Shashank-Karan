@@ -2,6 +2,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const { boardKey, createBoard, initialState, legalMoves, parseCoordinate, playMove } = require('../src/go');
+const { scoreGame } = require('../src/score');
 
 test('creates supported board sizes', () => {
   assert.equal(createBoard(9).length, 9);
@@ -35,4 +36,19 @@ test('rejects positional Ko', () => {
   const state = initialState(9);
   const board = createBoard(9); board[0][0] = 'B';
   assert.throws(() => playMove({ ...state, previousPosition: boardKey(board) }, 0, 0, 'B'), /Ko/);
+});
+
+test('rejects a position repeated anywhere in the game history', () => {
+  const state = initialState(9);
+  const board = createBoard(9); board[0][0] = 'B';
+  assert.throws(() => playMove({ ...state, previousPosition: null, positions: [boardKey(board)] }, 0, 0, 'B'), /superko/);
+});
+
+test('scores Chinese area and komi after two passes', () => {
+  const game = initialState(9);
+  game.board[0][0] = 'B'; game.position = boardKey(game.board); game.positions = [game.position];
+  const result = scoreGame(game, 6.5);
+  assert.equal(result.method, 'chinese-area');
+  assert.equal(result.stones.B, 1);
+  assert.equal(result.totals.W, 6.5);
 });

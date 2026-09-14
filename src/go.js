@@ -60,7 +60,8 @@ function playMove(state, row, col, color = state.turn) {
   }
   if (!getGroup(next, row, col).liberties.size) throw new Error('Suicide is not legal');
   const key = boardKey(next);
-  if (key === state.previousPosition) throw new Error('Ko: this position repeats the previous position');
+  const seenPositions = state.positions || (state.previousPosition ? [state.previousPosition] : []);
+  if (seenPositions.includes(key)) throw new Error('Ko/superko: this position repeats an earlier position');
   return { board: next, position: key, previousPosition: boardKey(state.board), captured };
 }
 
@@ -74,7 +75,8 @@ function legalMoves(state) {
 
 function initialState(size) {
   const board = createBoard(size);
-  return { version: 1, boardSize: size, turn: 'B', board, history: [], captures: { B: 0, W: 0 }, passes: 0, finished: false, lastMove: null, previousPosition: null, position: boardKey(board) };
+  const position = boardKey(board);
+  return { version: 2, boardSize: size, turn: 'B', board, history: [], captures: { B: 0, W: 0 }, passes: 0, finished: false, lastMove: null, previousPosition: null, position, positions: [position], players: { B: null, W: null }, score: null };
 }
 
 module.exports = { EMPTY, COLORS, boardKey, coordinate, createBoard, getGroup, initialState, legalMoves, other, parseCoordinate, playMove };

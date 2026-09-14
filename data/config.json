@@ -1,6 +1,7 @@
 {
   "boardSize": 19,
   "komi": 6.5,
+  "ruleset": "chinese-area",
   "repository": "Shashank-Karan/Go-Game",
   "labels": { "move": "go-move", "processed": "move-processed", "rejected": "move-rejected" },
   "maxIssueTitleLength": 80

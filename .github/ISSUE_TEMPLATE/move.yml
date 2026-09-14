@@ -7,7 +7,7 @@ body:
     id: coordinate
     attributes:
       label: Your move
-      description: Type the coordinate you clicked in the README, such as D4. You can also type pass.
+      description: Type the coordinate you clicked in the README, such as D4. Type pass to pass, or resign to give up.
       placeholder: D4
     validations:
       required: true
