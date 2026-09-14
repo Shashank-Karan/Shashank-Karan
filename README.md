@@ -12,6 +12,8 @@ One board. One GitHub community. Every move is an issue.
 
 You are playing the color shown in **Current Turn**. Only one person can make the next move.
 
+For a live board that checks GitHub every 10 seconds, open the [Live Board](https://shashank-karan.github.io/Go-Game/). In repository Settings, set Pages source to **GitHub Actions** after the first deployment.
+
 ## Current Turn
 
 **Black** (B)

@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Community Go Game - Live Board</title>
+  <style>
+    :root { color-scheme: dark; --bg: #0d1117; --panel: #161b22; --line: #30363d; --text: #e6edf3; --muted: #8b949e; --wood: #d8a24a; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.5 system-ui, sans-serif; }
+    main { width: min(1100px, 100%); margin: 0 auto; padding: 32px 20px 60px; }
+    h1 { margin: 0 0 4px; font-size: clamp(26px, 4vw, 42px); }
+    .subtle { color: var(--muted); margin: 0 0 24px; }
+    .layout { display: grid; grid-template-columns: minmax(0, 760px) 280px; gap: 24px; align-items: start; }
+    .board-wrap { background: var(--wood); padding: 22px; border: 1px solid #8d6128; }
+    svg { display: block; width: 100%; height: auto; }
+    .panel { background: var(--panel); border: 1px solid var(--line); padding: 18px; }
+    .panel h2 { margin: 0 0 12px; font-size: 18px; }
+    dl { margin: 0; display: grid; grid-template-columns: 1fr auto; gap: 6px 12px; }
+    dt { color: var(--muted); } dd { margin: 0; text-align: right; }
+    .status { margin-top: 16px; color: #7ee787; }
+    .error { color: #ff7b72; }
+    @media (max-width: 850px) { .layout { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Community Go Game</h1>
+    <p class="subtle">Live board · refreshes automatically every 10 seconds</p>
+    <div class="layout">
+      <section class="board-wrap" aria-label="Live Go board" id="board"></section>
+      <aside class="panel">
+        <h2>Game status</h2>
+        <dl>
+          <dt>Turn</dt><dd id="turn">Loading</dd>
+          <dt>Moves</dt><dd id="moves">-</dd>
+          <dt>Captures</dt><dd id="captures">-</dd>
+          <dt>Last update</dt><dd id="updated">-</dd>
+        </dl>
+        <p class="status" id="status">Connecting to GitHub...</p>
+      </aside>
+    </div>
+  </main>
+  <script>
+    const repo = 'Shashank-Karan/Go-Game';
+    const rawRoot = `https://raw.githubusercontent.com/${repo}/main`;
+    const names = 'ABCDEFGHJKLMNOPQRST';
+    const escapeHtml = value => String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
+    function issueUrl(coordinate, turn) {
+      const params = new URLSearchParams({ title: `Go ${turn === 'B' ? 'Black' : 'White'} move: ${coordinate}`, body: `Move: ${coordinate}\n\nPlease leave this issue open for the Action bot to process.` });
+      return `https://github.com/${repo}/issues/new?${params}`;
+    }
+    function boardSvg(game) {
+      const size = game.boardSize, cell = size === 19 ? 28 : 40, pad = 28, width = pad * 2 + cell * (size - 1);
+      let lines = '', labels = '', stones = '';
+      for (let i = 0; i < size; i++) {
+        const point = pad + i * cell;
+        lines += `<line x1="${pad}" y1="${point}" x2="${width - pad}" y2="${point}"/><line x1="${point}" y1="${pad}" x2="${point}" y2="${width - pad}"/>`;
+        labels += `<text x="${point}" y="${width - 6}" text-anchor="middle">${names[i]}</text><text x="10" y="${width - point + 5}" text-anchor="middle">${i + 1}</text>`;
+      }
+      for (let row = 0; row < size; row++) for (let col = 0; col < size; col++) {
+        const stone = game.board[row]?.[col], x = pad + col * cell, y = pad + (size - 1 - row) * cell;
+        if (stone) {
+          const last = game.lastMove && game.lastMove.row === row && game.lastMove.col === col;
+          stones += `<circle class="stone ${stone === 'B' ? 'black' : 'white'}" cx="${x}" cy="${y}" r="${cell * .43}"/>${last ? `<circle class="last" cx="${x}" cy="${y}" r="${cell * .14}"/>` : ''}`;
+        } else if (!game.finished) {
+          const coordinate = `${names[col]}${row + 1}`;
+          stones += `<a href="${issueUrl(coordinate, game.turn)}"><circle class="legal" cx="${x}" cy="${y}" r="${cell * .14}"/></a>`;
+        }
+      }
+      return `<svg viewBox="0 0 ${width} ${width}" role="img" aria-label="${size} by ${size} Go board"><style>svg{background:#d8a24a}.grid{stroke:#633f1e;stroke-width:1}.label{font:12px sans-serif;fill:#432916}.stone{stroke:#321f0e;stroke-width:1}.black{fill:#151515}.white{fill:#f8f4e8}.legal{fill:#b8782e;opacity:.28}.last{fill:#e84c3d;stroke:#fff;stroke-width:1}</style><g class="grid">${lines}</g><g>${stones}</g><g class="label">${labels}</g></svg>`;
+    }
+    async function update() {
+      try {
+        const response = await fetch(`${rawRoot}/data/game.json?t=${Date.now()}`, { cache: 'no-store' });
+        if (!response.ok) throw new Error(`GitHub returned ${response.status}`);
+        const game = await response.json();
+        document.querySelector('#board').innerHTML = boardSvg(game);
+        document.querySelector('#turn').textContent = game.finished ? 'Game over' : game.turn === 'B' ? 'Black' : 'White';
+        document.querySelector('#moves').textContent = game.history.length;
+        document.querySelector('#captures').textContent = `B ${game.captures.B} / W ${game.captures.W}`;
+        document.querySelector('#updated').textContent = game.updatedAt ? new Date(game.updatedAt).toLocaleString() : 'Not started';
+        document.querySelector('#status').textContent = `Connected · checked ${new Date().toLocaleTimeString()}`;
+        document.querySelector('#status').className = 'status';
+      } catch (error) {
+        document.querySelector('#status').textContent = `Could not read GitHub state: ${error.message}`;
+        document.querySelector('#status').className = 'status error';
+      }
+    }
+    update();
+    setInterval(update, 10000);
+  </script>
+</body>
+</html>

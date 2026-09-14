@@ -72,6 +72,8 @@ function renderReadme(root, game, players, config) {
     '',
     'You are playing the color shown in **Current Turn**. Only one person can make the next move.',
     '',
+    `[For a live board that checks GitHub every 10 seconds, open the Live Board](https://shashank-karan.github.io/Go-Game/). Enable GitHub Pages with **GitHub Actions** as the source in repository Settings.`,
+    '',
     '## Current Turn',
     '',
     `**${game.finished ? 'Game over' : turnName(game.turn)}** (${game.turn})`,
