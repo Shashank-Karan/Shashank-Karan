@@ -7,7 +7,7 @@ permissions:
   issues: write
 jobs:
   move:
-    if: contains(github.event.issue.title, 'Go move') || contains(github.event.issue.title, 'Go pass') || contains(github.event.issue.body, 'Move:')
+    if: contains(github.event.issue.labels.*.name, 'go-move') || contains(github.event.issue.body, 'Move:') || startsWith(github.event.issue.title, 'Go ')
     concurrency:
       group: community-go-move
       cancel-in-progress: false
@@ -40,4 +40,4 @@ jobs:
         with:
           script: |
             await github.rest.issues.addLabels({owner: context.repo.owner, repo: context.repo.repo, issue_number: context.issue.number, labels: ['move-rejected']});
-            await github.rest.issues.createComment({owner: context.repo.owner, repo: context.repo.repo, issue_number: context.issue.number, body: 'This move was rejected. Check the workflow log for the reason, then choose another coordinate from the README.'});
+            await github.rest.issues.createComment({owner: context.repo.owner, repo: context.repo.repo, issue_number: context.issue.number, body: 'This move was rejected. Open the failed workflow run for the exact reason, then choose another coordinate from the README.'});
