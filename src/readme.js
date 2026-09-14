@@ -18,7 +18,7 @@ function renderReadme(root, game, players, config) {
     const number = game.history.length - index;
     return `${number}. **${move.color || '-'}** ${move.coordinate || 'pass'} by @${move.player || 'anonymous'}`;
   }).join('\n') || 'No moves yet.';
-  const legal = legalMoves(game);
+  const legal = game.finished ? [] : legalMoves(game);
   const links = legal.map(move => {
     return '[' + move + '](' + issueLink(repo, move, moveTitle) + ')';
   }).reduce((rows, link, index) => {
@@ -29,10 +29,11 @@ function renderReadme(root, game, players, config) {
   const board = renderBoard(game, repo);
   fs.writeFileSync(path.join(root, 'assets', 'board.svg'), `${board}\n`);
   const leaders = leaderboard(players).map(([name, value], index) => {
-    return `${index + 1}. @${name} - **${value.moves} moves** (${value.black} Black, ${value.white} White), ${value.captures} captures`;
+    return `${index + 1}. @${name} - **${value.moves} moves** (${value.black} Black, ${value.white} White), ${value.captures} captures, ${value.wins} wins`;
   }).join('\n') || 'No contributors yet.';
   const lastMove = game.lastMove ? `${game.lastMove.coordinate} by @${game.history.at(-1).player || 'anonymous'}` : 'None yet';
   const result = game.result ? game.result.type === 'resignation' ? `${turnName(game.result.winner)} wins by resignation` : game.result.winner === 'JIGO' ? 'Draw (jigo)' : `${turnName(game.result.winner)} wins by ${game.result.margin} points` : 'Game in progress';
+  const score = game.score ? `- Final score: **Black ${game.score.totals.B} / White ${game.score.totals.W}** (komi ${game.score.komi})` : null;
   const stats = [
     `- Board: **${game.boardSize}x${game.boardSize}**`,
     `- Move count: **${game.history.length}**`,
@@ -41,8 +42,9 @@ function renderReadme(root, game, players, config) {
     `- Status: **${game.finished ? 'Finished' : 'In progress'}**`,
     `- Legal moves available: **${legal.length}**`,
     `- Players: **${Object.keys(players.players).length}**`,
-    `- Last move: **${lastMove}**`
-    ,`- Result: **${result}**`
+    `- Last move: **${lastMove}**`,
+    `- Result: **${result}**`,
+    ...(score ? [score] : [])
   ].join('\n');
   const turnLabel = game.finished ? 'the end of the game' : turnName(game.turn) + "'s turn";
   const coordinateGuide = [

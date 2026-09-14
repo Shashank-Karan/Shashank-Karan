@@ -9,8 +9,15 @@ function parseMove(issue, size) {
   if (!move) throw new Error(`Invalid coordinate: ${value}`);
   return move;
 }
+function commandFromIssue(issue) {
+  const title = String(issue.title || '').trim();
+  const bodyLines = String(issue.body || '').split(/\r?\n/).map(line => line.trim()).filter(Boolean);
+  if (/^go\s+pass\b/i.test(title) || bodyLines.some(line => /^pass$/i.test(line))) return 'pass';
+  if (/^go\s+resign(?:ation)?\b/i.test(title) || bodyLines.some(line => /^resign(?:ation)?$/i.test(line))) return 'resign';
+  return 'move';
+}
 function issueLink(repository, coordinate, title = 'Go move') {
   const params = new URLSearchParams({ title: `${title}: ${coordinate}`, body: `Move: ${coordinate}\n\nPlease leave this issue open for the Action bot to process.` });
   return `https://github.com/${repository}/issues/new?${params}`;
 }
-module.exports = { issueLink, parseMove };
+module.exports = { commandFromIssue, issueLink, parseMove };

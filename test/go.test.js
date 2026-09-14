@@ -3,6 +3,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const { boardKey, createBoard, initialState, legalMoves, parseCoordinate, playMove } = require('../src/go');
 const { scoreGame } = require('../src/score');
+const { commandFromIssue } = require('../src/issue');
 
 test('creates supported board sizes', () => {
   assert.equal(createBoard(9).length, 9);
@@ -51,4 +52,10 @@ test('scores Chinese area and komi after two passes', () => {
   assert.equal(result.method, 'chinese-area');
   assert.equal(result.stones.B, 1);
   assert.equal(result.totals.W, 6.5);
+});
+
+test('only exact pass and resign commands end or pass the game', () => {
+  assert.equal(commandFromIssue({ title: 'Go move: D4', body: 'I do not resign' }), 'move');
+  assert.equal(commandFromIssue({ title: 'Go pass', body: '' }), 'pass');
+  assert.equal(commandFromIssue({ title: 'Go move: resign', body: 'resign' }), 'resign');
 });

@@ -16,7 +16,7 @@ function renderBoard(game, repository = 'OWNER/REPOSITORY') {
   for (let row = 0; row < size; row++) for (let col = 0; col < size; col++) {
     const stone = game.board[row][col];
     const x = pad + col * cell, y = pad + (size - 1 - row) * cell;
-    if (!stone) {
+    if (!stone && !game.finished) {
       const move = `${String.fromCharCode(65 + col)}${row + 1}`;
       try {
         playMove(game, row, col);
