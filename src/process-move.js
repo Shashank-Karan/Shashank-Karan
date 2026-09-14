@@ -42,6 +42,7 @@ function applyIssue(root, issue) {
     game.passes = 0; game.turn = other(game.turn);
   }
   if (game.finished && game.result) recordResult(players, game.result);
+  game.updatedAt = new Date().toISOString();
   writeJson(path.join(root, 'data', 'game.json'), game); writeJson(path.join(root, 'data', 'players.json'), players);
   require('node:fs').writeFileSync(path.join(root, 'data', 'game.sgf'), `${toSgf(game)}\n`); renderReadme(root, game, players, config);
   return game;

@@ -43,6 +43,7 @@ function renderReadme(root, game, players, config) {
     `- Legal moves available: **${legal.length}**`,
     `- Players: **${Object.keys(players.players).length}**`,
     `- Last move: **${lastMove}**`,
+    `- Last updated: **${game.updatedAt || 'Not started'}**`,
     `- Result: **${result}**`,
     ...(score ? [score] : [])
   ].join('\n');
@@ -77,7 +78,7 @@ function renderReadme(root, game, players, config) {
     '',
     '## Current Board',
     '',
-    '<img src="assets/board.svg" alt="Current Go board" width="760">',
+    `<img src="assets/board.svg?v=${game.history.length}" alt="Current Go board" width="760">`,
     '',
     '## How To Read The Board',
     '',

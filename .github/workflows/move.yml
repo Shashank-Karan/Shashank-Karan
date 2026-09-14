@@ -32,7 +32,7 @@ jobs:
         with:
           script: |
             await github.rest.issues.addLabels({owner: context.repo.owner, repo: context.repo.repo, issue_number: context.issue.number, labels: ['move-processed']});
-            await github.rest.issues.createComment({owner: context.repo.owner, repo: context.repo.repo, issue_number: context.issue.number, body: 'Accepted. The board is being updated now. Please refresh the README in a moment.'});
+            await github.rest.issues.createComment({owner: context.repo.owner, repo: context.repo.repo, issue_number: context.issue.number, body: 'Accepted. The board, move history, and statistics have been updated. Refresh the README to see the new position.'});
             await github.rest.issues.update({owner: context.repo.owner, repo: context.repo.repo, issue_number: context.issue.number, state: 'closed'});
       - name: Mark rejected issue
         if: failure() && github.event.issue != null

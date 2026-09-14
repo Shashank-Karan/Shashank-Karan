@@ -76,7 +76,7 @@ function legalMoves(state) {
 function initialState(size) {
   const board = createBoard(size);
   const position = boardKey(board);
-  return { version: 2, boardSize: size, turn: 'B', board, history: [], captures: { B: 0, W: 0 }, passes: 0, finished: false, lastMove: null, previousPosition: null, position, positions: [position], players: { B: null, W: null }, score: null };
+  return { version: 2, boardSize: size, turn: 'B', board, history: [], captures: { B: 0, W: 0 }, passes: 0, finished: false, lastMove: null, previousPosition: null, position, positions: [position], players: { B: null, W: null }, score: null, updatedAt: null };
 }
 
 module.exports = { EMPTY, COLORS, boardKey, coordinate, createBoard, getGroup, initialState, legalMoves, other, parseCoordinate, playMove };
