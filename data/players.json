@@ -1,17 +1,17 @@
 {
   "players": {
     "Shashank-Karan": {
-      "moves": 73,
+      "moves": 74,
       "black": 37,
-      "white": 36,
+      "white": 37,
       "captures": 7,
       "passes": 0,
       "resignations": 0,
       "wins": 0,
       "losses": 0,
       "elo": 1000,
-      "lastMove": 73,
-      "lastColor": "B"
+      "lastMove": 74,
+      "lastColor": "W"
     }
   }
 }
